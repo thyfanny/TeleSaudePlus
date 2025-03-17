@@ -1,0 +1,110 @@
+.main-container {
+    width: 100%;
+    min-height: 100vh;
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    position: relative;
+}
+
+.cards-container {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 1200px;
+}
+
+.card {
+    width: 250px;
+    height: 200px;
+    background: #ffffff;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.card-icon {
+    width: 100px;
+    height: 100px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-icon.blue {
+    background-color: #0099ff;
+}
+
+.card-icon.yellow {
+    background-color: #ffa500;
+}
+
+.card-icon.horario {
+    background-color: #17a71a;
+}
+
+.icon-image {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
+}
+
+.card span {
+    font-size: 16px;
+    color: #333333;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* Estilo para a foto de perfil no canto superior direito */
+.profile-photo {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.profile-photo:hover {
+    transform: scale(1.05);
+}
+
+.profile-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .cards-container {
+        gap: 20px;
+    }
+
+    .card {
+        width: 200px;
+        height: 180px;
+    }
+}
+
+
