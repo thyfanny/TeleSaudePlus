@@ -5,67 +5,80 @@ import api from "../../services/api";
 
 function Editar_Horario() {
   const navigate = useNavigate();
-
+  const medicoId = localStorage.getItem("medicoId");
+  console.log("id do médico:", medicoId);
   const [horarios, setHorarios] = useState([]);
 
-  const diasSemana = ["Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado", "Domingo"];
+  // Mapeamento: 0 = Domingo, 1 = Segunda...
+  const diasSemanaLabel = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
+
   const horarioPadrao = {
-    hora_inicio: "08:00",
-    hora_fim: "17:00",
-    dia_semana: "",
-    id_medico: 1, // Ajuste conforme necessário
+    hora_inicio: "0:00",
+    hora_fim: "00:00",
+    dia_semana: 0,
+    id_medico: medicoId,
     modified: false,
   };
 
   async function getHorario() {
-    const response = await api.get("/horarios-medicos/:id");
-    const horarioData = response.data;
+    try {
+      const response = await api.get(`/horarios-medicos/${medicoId}`);
+      const horarioData = response.data;
 
-    // Adiciona horários padrão para os dias que não possuem horários definidos
-    const horariosCompletos = diasSemana.map(dia => {
-      const horarioExistente = horarioData.find(horario => horario.dia_semana === dia);
-      return horarioExistente || { ...horarioPadrao, dia_semana: dia };
-    });
+      const horariosCompletos = diasSemanaLabel.map((_, index) => {
+        const horarioExistente = horarioData.find(horario => horario.dia_semana === index);
 
-    setHorarios(horariosCompletos);
-    console.log("Conectado ao banco de dados");
+        if (horarioExistente) {
+          return {
+            id: horarioExistente.id,
+            id_medico: horarioExistente.id_medico,
+            dia_semana: horarioExistente.dia_semana,
+            hora_inicio: horarioExistente.horario_inicio.slice(0,5), // '08:00'
+            hora_fim: horarioExistente.horario_fim.slice(0,5),       // '16:00'
+            modified: false,
+          };
+        } else {
+          return { ...horarioPadrao, dia_semana: index };
+        }
+      });
+
+      setHorarios(horariosCompletos);
+      console.log("Horários carregados", horariosCompletos);
+    } catch (error) {
+      console.error("Erro ao buscar horários:", error);
+    }
   }
 
   useEffect(() => {
-    getHorario();
-  }, []);
+    if (medicoId) {
+      getHorario();
+    }
+  }, [medicoId]);
 
-  const handleVoltar = () => {
-    navigate("/main");
-  };
+  const handleVoltar = () => navigate("/main", { state: { id: medicoId } });
 
-  const handleCancelar = () => {
-    navigate("/editar-horario");
-  };
+  const handleCancelar = () => navigate("/editar-horario", { state: { id: medicoId } });
 
   const handleSalvar = async () => {
     try {
       for (const horario of horarios) {
         if (horario.modified) {
-          if (horario.id < 0) {
-            await api.post("/horarios-medicos", {
-              horario_inicio: horario.hora_inicio,
-              horario_fim: horario.hora_fim,
-              dia_semana: horario.dia_semana,
-              id_medico: horario.id_medico,
-            });
+          const payload = {
+            horario_inicio: horario.hora_inicio,
+            horario_fim: horario.hora_fim,
+            dia_semana: horario.dia_semana,
+            id_medico: horario.id_medico,
+          };
+
+          if (!horario.id) {
+            await api.post("/horarios-medicos", payload);
           } else {
-            await api.put(`/horarios-medicos/${horario.id}`, {
-              horario_inicio: horario.hora_inicio,
-              horario_fim: horario.hora_fim,
-              dia_semana: horario.dia_semana,
-              id_medico: horario.id_medico,
-            });
+            await api.put(`/horarios-medicos/${horario.id}`, payload);
           }
         }
       }
       alert("Horários alterados com sucesso!");
-      navigate("/editar-horario");
+      navigate("/editar-horario", { state: { id: medicoId } });
     } catch (error) {
       alert("Erro ao alterar os horários.");
       console.error(error);
@@ -86,7 +99,7 @@ function Editar_Horario() {
         <div className="horario-lista">
           {horarios.map((item, index) => (
             <div className="horario-item" key={index}>
-              <p>{item.dia_semana}</p>
+              <p>{diasSemanaLabel[item.dia_semana]}</p>
               <input
                 type="time"
                 value={item.hora_inicio}

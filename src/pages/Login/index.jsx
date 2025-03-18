@@ -1,14 +1,24 @@
 import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../../assets/Telesaude_logo.png';
 import './style.css';
-//import api from '../../services/api';
+import api from '../../services/api';
 
 function Login() {
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit =async (e) => {
         e.preventDefault();
-        navigate('/main'); // Redireciona para a página Main após o login
+        const response= await api.post("/login",{email:e.target.email.value,senha:e.target.senha.value});
+      
+        console.log(response.status)
+        console.log(response.data.id)
+        console.log(response.data)
+        localStorage.setItem("medicoId", response.data.id);
+        if(response.status===200){
+           navigate('/main'); 
+        }
+        if(response.status===401){alert("Usuário ou senha inválidos");}
+         // Redireciona para a página Main após o login
     };
 
     return (
