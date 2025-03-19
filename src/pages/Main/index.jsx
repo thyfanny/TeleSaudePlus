@@ -6,6 +6,7 @@ import agendaIcon from '../../assets/agenda-icon.png';
 import './style.css';
 
 function Main() {
+    const imagem = localStorage.getItem("imagem") || fotoPerfil;
     const navigate = useNavigate();
 
     const handleVisualizarClick = () => {
@@ -32,7 +33,7 @@ function Main() {
         <div className="main-container">
             
             <div className="profile-photo" onClick={handleEditarPerfil}>
-                <img src={fotoPerfil} alt="Perfil" />
+                <img src={imagem} alt="Perfil" />
             </div>
 
             <div className="cards-container">

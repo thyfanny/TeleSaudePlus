@@ -6,20 +6,32 @@ import api from '../../services/api';
 function Login() {
     const navigate = useNavigate();
 
-    const handleSubmit =async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const response= await api.post("/login",{email:e.target.email.value,senha:e.target.senha.value});
-      
-        console.log(response.status)
-        console.log(response.data.id)
-        console.log(response.data)
-        localStorage.setItem("medicoId", response.data.id);
-        if(response.status===200){
-           navigate('/main'); 
+        try {
+            const response = await api.post("/login", {
+                email: e.target.email.value,
+                senha: e.target.senha.value
+            });
+    
+            if (response.status === 200) {
+                const medico = await api.get(`medicos/${response.data.id}`);
+                // Salva o médico completo ou só o que quiser
+                localStorage.setItem("medico", JSON.stringify(medico));
+                localStorage.setItem("medicoId", medico.data.id);
+                localStorage.setItem("imagem", medico.data.imageUrl);
+                localStorage.setItem("nome", medico.data.nome);
+                console.log(medico);
+                navigate('/main');
+            } else if (response.status === 401) {
+                alert("Usuário ou senha inválidos");
+            }
+        } catch (err) {
+            console.error("Erro ao fazer login:", err);
+            alert("Erro ao fazer login, tente novamente.");
         }
-        if(response.status===401){alert("Usuário ou senha inválidos");}
-         // Redireciona para a página Main após o login
     };
+    
 
     return (
         <div className="container">
