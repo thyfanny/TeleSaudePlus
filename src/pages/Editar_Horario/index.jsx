@@ -71,9 +71,12 @@ function Editar_Horario() {
           };
 
           if (!horario.id) {
-            await api.post("/horarios-medicos", payload);
+            const result=await api.post("/horarios-medicos", payload);
+            console.log(result)
           } else {
-            await api.put(`/horarios-medicos/${horario.id}`, payload);
+            const result= await api.put(`/horarios-medicos/${horario.id}`, payload);
+            console.log(payload)
+            console.log(result)
           }
         }
       }
