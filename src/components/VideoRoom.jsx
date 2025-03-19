@@ -3,7 +3,7 @@ import AgoraRTC from "agora-rtc-sdk-ng";
 import { VideoPlayer } from "./VideoPlayer";
 
 const APP_ID= '0bd5051c48e94ca799ad873e186a761e';
-const TOKEN= '0060bd5051c48e94ca799ad873e186a761eIAD+3YX3Y6z6Y8e0Lqy0hUJ2Ql1q6Xt7Zk6ZDZ4rZz3F4vKfV4gAAAAAEAA9KbZrJqoYAEAAQDmmpig=';
+const TOKEN= '0060bd5051c48e94ca799ad873e186a761eIAAW5bByHNIcriyVgd5oLVk6Z6jBcohG0LC91+tiI7kpRg9JtOYh39v0IgBXQh6zI2TbZwQAAQCzINpnAgCzINpnAwCzINpnBACzINpn';
 const CHANNEL= 'teste';
 
 const client = AgoraRTC.createClient({
@@ -23,7 +23,7 @@ const client = AgoraRTC.createClient({
       }
   
       if (mediaType === 'audio') {
-        // user.audioTrack.play()
+        user.audioTrack.play()
       }
     };
   
@@ -66,7 +66,7 @@ const client = AgoraRTC.createClient({
         }
         client.off('user-published', handleUserJoined);
         client.off('user-left', handleUserLeft);
-        client.unpublish(tracks).then(() => client.leave());
+        client.unpublish(localTracks).then(() => client.leave());
       };
     }, []);
   
