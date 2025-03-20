@@ -94,6 +94,7 @@ function Cadastro() {
         const senha = e.target.senha.value;
         const confirmarSenha = e.target.confirmarSenha.value;
         const crm = e.target.crm.value;
+        const especializacao = e.target.especializacao.value;
         
         if (!validarEmail(email)) {
             return;
@@ -111,7 +112,8 @@ function Cadastro() {
                 cpf,
                 telefone,
                 senha,
-                crm
+                crm,
+                especializacao
             });
 
             if (response.status === 201) {
