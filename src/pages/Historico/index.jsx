@@ -7,17 +7,19 @@ import { useEffect } from 'react';
 function Historico() {
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
+    const [consultas, setConsultas] = useState([]);
+    const medicoId= localStorage.getItem("medicoId");
 
     // Chama o banco de dados para pegar o histórico de consultas
-    let consultas = [];
     async function getHistórico() {
-        consultas = await api.get('/historico-exames/:id');
-        console.log("Conectado ao banco de dados");
+        const result = await api.get(`/consultas-agendadas/medico/${medicoId}`);
+        setConsultas(result.data);
+        console.log(result.data);
     }
 
     useEffect(() => {
         getHistórico();
-    }, []);
+    }, [medicoId]);
 
     // Agrupa consultas por paciente
     const consultasPorPaciente = consultas.reduce((acc, consulta) => {
