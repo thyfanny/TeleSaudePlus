@@ -6,6 +6,7 @@ import agendaIcon from '../../assets/agenda-icon.png';
 import './style.css';
 
 function Main() {
+    const imagem = localStorage.getItem("imagem") || fotoPerfil;
     const navigate = useNavigate();
 
     const handleVisualizarClick = () => {
@@ -24,15 +25,11 @@ function Main() {
         navigate('/editar-horario');
     };
 
-    const handleTeste = () => {
-        navigate('/teste-entrar');
-    };
-
     return (
         <div className="main-container">
             
             <div className="profile-photo" onClick={handleEditarPerfil}>
-                <img src={fotoPerfil} alt="Perfil" />
+                <img src={imagem} alt="Perfil" />
             </div>
 
             <div className="cards-container">
@@ -56,9 +53,6 @@ function Main() {
                     </div>
                     <span>Horários</span>
                 </div>
-
-                <button className="logout-button" onClick={handleTeste}>
-                    Sair</button>
 
             </div>
         </div>

@@ -11,7 +11,6 @@ import Historico from "./pages/Historico/index.jsx";
 import Token from "./pages/Token/index.jsx";
 import Cadastro from "./pages/Cadastro/index.jsx";
 import Editar_Horario from "./pages/Editar_Horario/index.jsx";
-import Teste_entrar from "./pages/Teste_entrar/index.jsx";
 import Entrar_Consulta from "./pages/Entrar_Consulta/index.jsx";
 
 createRoot(document.getElementById("root")).render(
@@ -28,7 +27,6 @@ createRoot(document.getElementById("root")).render(
         <Route path="/token" element={<Token />} />
         <Route path="/editar-horario" element={<Editar_Horario />} />
         <Route path="/entrar" element={<Entrar_Consulta />} />
-        <Route path="/teste-entrar" element={<Teste_entrar />} />
       </Routes>
     </BrowserRouter>
   </StrictMode>

@@ -14,7 +14,7 @@ function Token() {
         e.preventDefault();
         
         try {
-            const response = await api.post('/validar-token', {
+            const response = await api.post('/verificar-token', {
                 email,
                 token
             });
