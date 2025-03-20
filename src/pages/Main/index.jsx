@@ -25,10 +25,6 @@ function Main() {
         navigate('/editar-horario');
     };
 
-    const handleTeste = () => {
-        navigate('/teste-entrar');
-    };
-
     return (
         <div className="main-container">
             
@@ -57,9 +53,6 @@ function Main() {
                     </div>
                     <span>Horários</span>
                 </div>
-
-                <button className="logout-button" onClick={handleTeste}>
-                    Sair</button>
 
             </div>
         </div>
