@@ -12,7 +12,7 @@ function Historico() {
 
     // Chama o banco de dados para pegar o histórico de consultas
     async function getHistórico() {
-        const result = await api.get(`/consultas-agendadas/medico/${medicoId}`);
+        const result = await api.get(`/consultas-agendadas/medico/antes-hoje/${medicoId}`);
         setConsultas(result.data);
         console.log(result.data);
     }
@@ -23,11 +23,14 @@ function Historico() {
 
     // Agrupa consultas por paciente
     const consultasPorPaciente = consultas.reduce((acc, consulta) => {
-        const key = `${consulta.paciente}-${consulta.cpf}`;
+        const nomePaciente = consulta.nome || 'Paciente Desconhecido';
+        const cpfPaciente = consulta.cpf || '---';
+        const key = `${nomePaciente}-${cpfPaciente}`;
+    
         if (!acc[key]) {
             acc[key] = {
-                paciente: consulta.paciente,
-                cpf: consulta.cpf,
+                paciente: nomePaciente,
+                cpf: cpfPaciente,
                 consultas: []
             };
         }
@@ -75,7 +78,7 @@ function Historico() {
                             {paciente.consultas.map((consulta, consultaIndex) => (
                                 <div className="consulta-item" key={consultaIndex}>
                                     <div className="consulta-data">
-                                        {new Date(consulta.data).toLocaleDateString('pt-BR')}
+                                        {new Date(consulta.horario_inicio).toLocaleDateString('pt-BR')}
                                     </div>
                                     <span className={`status-consulta ${consulta.status}`}>
                                         {consulta.status}
