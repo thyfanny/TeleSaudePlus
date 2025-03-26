@@ -71,19 +71,10 @@ const client = AgoraRTC.createClient({
     }, []);
   
     return (
-      <div
-        style={{ display: 'flex', justifyContent: 'center' }}
-      >
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(2, 200px)',
-          }}
-        >
-          {users.map((user) => (
-            <VideoPlayer key={user.uid} user={user} />
-          ))}
-        </div>
+      <div className="video-grid">
+        {users.map((user) => (
+          <VideoPlayer key={user.uid} user={user} />
+        ))}
       </div>
     );
   };

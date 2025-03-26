@@ -46,3 +46,38 @@ h2 {
 .sair-button:hover {
   background-color: #c82333;
 }
+
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 20px auto;
+}
+
+.video-player {
+  background-color: #1a1a1a;
+  border-radius: 12px;
+  overflow: hidden;
+  aspect-ratio: 16/9;
+  width: 100%;
+  position: relative;
+}
+
+.video-player .user-info {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.entrar-containder {
+  min-height: 100vh;
+  background-color: #f0f2f5;
+  padding: 20px;
+}
