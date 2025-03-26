@@ -115,7 +115,11 @@ function Consultas() {
 
         try {
             await api.post(`/cancelamento-consulta/${selectedConsulta.id}`, {
-                motivo: motivoCancelamento
+                mensagem: motivoCancelamento,
+                id_usuario:selectedConsulta.id_usuario,
+                nome_medico:localStorage.getItem("nome"),
+                nome_usuario:selectedConsulta.nome,
+                horario_inicio:selectedConsulta.horario_inicio
             });
             
             // Atualiza a lista de consultas
