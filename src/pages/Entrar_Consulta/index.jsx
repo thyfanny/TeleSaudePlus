@@ -5,7 +5,7 @@ import { VideoRoom } from "../../components/VideoRoom";
 import './style.css';
 
 const APP_ID= '0bd5051c48e94ca799ad873e186a761e';
-const TOKEN= '0060bd5051c48e94ca799ad873e186a761eIACLwyMtmfQqlcjqzExiLgO1hKjar66v+6uQKzy/Hebi8A9JtOYh39v0IgCjzfJi6dHZZwQAAQB5jthnAgB5jthnAwB5jthnBAB5jthn';
+const TOKEN= '0060bd5051c48e94ca799ad873e186a761eIAAQBTZs2CpCzj2lY2w8lpqQLETqwYeLorRs6v74VJEuBA9JtOYh39v0IgCXtiH/kKzkZwQAAQAgaeNnAgAgaeNnAwAgaeNnBAAgaeNn';
 const CHANNEL= 'teste';
 
 
