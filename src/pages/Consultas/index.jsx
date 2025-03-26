@@ -8,6 +8,11 @@ function Consultas() {
     const navigate = useNavigate();
     const [currentDate, setCurrentDate] = useState(new Date());
     const [consultas, setConsultas] = useState([]);
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [selectedConsulta, setSelectedConsulta] = useState(null);
+    const [motivoCancelamento, setMotivoCancelamento] = useState('');
+    const [showMotivoModal, setShowMotivoModal] = useState(false);
+
     const handleVoltar = () => {
         navigate('/Main');
     };
@@ -92,6 +97,41 @@ function Consultas() {
     });
     
 
+    const handleCancelar = (consulta) => {
+        setSelectedConsulta(consulta);
+        setShowConfirmModal(true);
+    };
+
+    const handleConfirmCancelamento = () => {
+        setShowConfirmModal(false);
+        setShowMotivoModal(true);
+    };
+
+    const handleSubmitCancelamento = async () => {
+        if (!motivoCancelamento.trim()) {
+            alert('Por favor, insira um motivo para o cancelamento.');
+            return;
+        }
+
+        try {
+            await api.post(`/cancelamento-consulta/${selectedConsulta.id}`, {
+                motivo: motivoCancelamento
+            });
+            
+            // Atualiza a lista de consultas
+            const response = await api.get(`/medicos/consultas/${medicoId}`);
+            setConsultas(response.data);
+            
+            setShowMotivoModal(false);
+            setMotivoCancelamento('');
+            setSelectedConsulta(null);
+            alert('Consulta cancelada com sucesso!');
+        } catch (error) {
+            console.error('Erro ao cancelar consulta:', error);
+            alert('Erro ao cancelar consulta. Tente novamente.');
+        }
+    };
+
     return (
         <div className="Consultas-container">
             
@@ -117,7 +157,9 @@ function Consultas() {
                                 </div>
                                 <div className="botoes-container">
                                     <button className="entrar-button" onClick={handleEntrar}>Entrar</button>
-                                    <button className="cancelar-button">Cancelar</button>
+                                    <button className="cancelar-button" onClick={() => handleCancelar(consulta)}>
+                                        Cancelar
+                                    </button>
                                 </div>
                             </div>
                         );
@@ -133,6 +175,36 @@ function Consultas() {
                 Voltar
             </button>
             
+            {showConfirmModal && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <h3>Confirmar Cancelamento</h3>
+                        <p>Tem certeza que deseja cancelar esta consulta?</p>
+                        <div className="modal-buttons">
+                            <button onClick={handleConfirmCancelamento}>Sim</button>
+                            <button onClick={() => setShowConfirmModal(false)}>Não</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showMotivoModal && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <h3>Motivo do Cancelamento</h3>
+                        <textarea
+                            value={motivoCancelamento}
+                            onChange={(e) => setMotivoCancelamento(e.target.value)}
+                            placeholder="Digite o motivo do cancelamento"
+                            rows="4"
+                        />
+                        <div className="modal-buttons">
+                            <button onClick={handleSubmitCancelamento}>Confirmar</button>
+                            <button onClick={() => setShowMotivoModal(false)}>Voltar</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
