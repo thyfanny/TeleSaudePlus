@@ -1,42 +1,39 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import AgoraRTC from "agora-rtc-sdk-ng";
+import React, { useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { VideoRoom } from "../../components/VideoRoom";
 import './style.css';
 
-const APP_ID= '0bd5051c48e94ca799ad873e186a761e';
-const TOKEN= '0060bd5051c48e94ca799ad873e186a761eIAAQBTZs2CpCzj2lY2w8lpqQLETqwYeLorRs6v74VJEuBA9JtOYh39v0IgCXtiH/kKzkZwQAAQAgaeNnAgAgaeNnAwAgaeNnBAAgaeNn';
-const CHANNEL= 'teste';
-
-
-function Entrar_Consulta () {
+function Entrar_Consulta() {
     const navigate = useNavigate();
-    const out = useState(false);
+    const { state } = useLocation();
+    console.log("Estado recebido:", state);
+
     const [joined, setJoined] = useState(false);
 
     const handleSair = () => {
+        setJoined(false); // Limpeza do estado de "joined"
         navigate("/consultas");
-      };
+    };
 
-    return(
-        <div className="entrar-containder">
+    return (
+        <div className="entrar-container">
             <h1>Iniciar Consulta</h1>
 
-            {!joined && (
+            {!joined ? (
                 <button className="entrar-button" onClick={() => setJoined(true)}>
                     Entrar
-                </button>) ||
-                (<button className="sair-button" onClick={handleSair}>
+                </button>
+            ) : (
+                <button className="sair-button" onClick={handleSair}>
                     Sair
-                </button>)
-                }
-            {joined && (
-                <VideoRoom />
+                </button>
             )}
 
+            {joined && state?.rtcToken && state?.channelName ? (
+                <VideoRoom rtcToken={state.rtcToken} channelName={state.channelName} />
+            ) : null}
         </div>
-    )
-    
+    );
 }
 
 export default Entrar_Consulta;

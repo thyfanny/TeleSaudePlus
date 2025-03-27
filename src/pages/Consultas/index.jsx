@@ -17,9 +17,14 @@ function Consultas() {
         navigate('/Main');
     };
 
-    const handleEntrar = () => {
-        navigate('/entrar');
-    }
+    const handleEntrar = (consulta) => {
+        navigate('/entrar', {
+            state: {
+                rtcToken: consulta.rtc_token,
+                channelName: `consulta_${consulta.id}`,
+            },
+        });
+    };
 
     const formatDate = (date) => {
         return date.toLocaleDateString('pt-BR');
@@ -55,41 +60,6 @@ function Consultas() {
         }
         getConsultas();
     },[medicoId]);
-
-    // const consultas = [
-    //     {
-    //         id: 4,
-    //         horario: "09:40",
-    //         data: "2025-02-24",
-    //         paciente: "Tatiane Silva Alves",
-    //         cpf: "022.594.559-08",
-    //         status: "agendada"
-    //     },
-    //     {
-    //         id: 5,
-    //         horario: "13:50",
-    //         data: "2025-02-25",
-    //         paciente: "João Ribeiro",
-    //         cpf: "011.541.559-88",
-    //         status: "agendada"
-    //     },
-    //     {
-    //         id: 6,
-    //         horario: "16:10",
-    //         data: "2025-02-23",
-    //         paciente: "Rafaela Silva",
-    //         cpf: "077.094.559-28",
-    //         status: "agendada"
-    //     },
-    //     {
-    //         id: 7,
-    //         horario: "17:30",
-    //         data: "2025-03-16",
-    //         paciente: "Carlos Silva",
-    //         cpf: "077.094.559-28",
-    //         status: "agendada"
-    //     }
-    // ];
 
     const filteredConsultas = consultas.filter(consulta => {
         const dataConsulta = new Date(consulta.horario_inicio);
@@ -160,7 +130,7 @@ function Consultas() {
                                     {consulta.nome} - {consulta.cpf}
                                 </div>
                                 <div className="botoes-container">
-                                    <button className="entrar-button" onClick={handleEntrar}>Entrar</button>
+                                    <button className="entrar-button" onClick={() => handleEntrar(consulta)}>Entrar</button>
                                     <button className="cancelar-button" onClick={() => handleCancelar(consulta)}>
                                         Cancelar
                                     </button>
