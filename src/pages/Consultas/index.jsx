@@ -8,13 +8,23 @@ function Consultas() {
     const navigate = useNavigate();
     const [currentDate, setCurrentDate] = useState(new Date());
     const [consultas, setConsultas] = useState([]);
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [selectedConsulta, setSelectedConsulta] = useState(null);
+    const [motivoCancelamento, setMotivoCancelamento] = useState('');
+    const [showMotivoModal, setShowMotivoModal] = useState(false);
+
     const handleVoltar = () => {
         navigate('/Main');
     };
 
-    const handleEntrar = () => {
-        navigate('/entrar');
-    }
+    const handleEntrar = (consulta) => {
+        navigate('/entrar', {
+            state: {
+                rtcToken: consulta.rtc_token,
+                channelName: `consulta_${consulta.id}`,
+            },
+        });
+    };
 
     const formatDate = (date) => {
         return date.toLocaleDateString('pt-BR');
@@ -51,46 +61,50 @@ function Consultas() {
         getConsultas();
     },[medicoId]);
 
-    // const consultas = [
-    //     {
-    //         id: 4,
-    //         horario: "09:40",
-    //         data: "2025-02-24",
-    //         paciente: "Tatiane Silva Alves",
-    //         cpf: "022.594.559-08",
-    //         status: "agendada"
-    //     },
-    //     {
-    //         id: 5,
-    //         horario: "13:50",
-    //         data: "2025-02-25",
-    //         paciente: "João Ribeiro",
-    //         cpf: "011.541.559-88",
-    //         status: "agendada"
-    //     },
-    //     {
-    //         id: 6,
-    //         horario: "16:10",
-    //         data: "2025-02-23",
-    //         paciente: "Rafaela Silva",
-    //         cpf: "077.094.559-28",
-    //         status: "agendada"
-    //     },
-    //     {
-    //         id: 7,
-    //         horario: "17:30",
-    //         data: "2025-03-16",
-    //         paciente: "Carlos Silva",
-    //         cpf: "077.094.559-28",
-    //         status: "agendada"
-    //     }
-    // ];
-
     const filteredConsultas = consultas.filter(consulta => {
         const dataConsulta = new Date(consulta.horario_inicio);
         return formatDateForComparison(dataConsulta) === formatDateForComparison(currentDate);
     });
     
+
+    const handleCancelar = (consulta) => {
+        setSelectedConsulta(consulta);
+        setShowConfirmModal(true);
+    };
+
+    const handleConfirmCancelamento = () => {
+        setShowConfirmModal(false);
+        setShowMotivoModal(true);
+    };
+
+    const handleSubmitCancelamento = async () => {
+        if (!motivoCancelamento.trim()) {
+            alert('Por favor, insira um motivo para o cancelamento.');
+            return;
+        }
+
+        try {
+            await api.post(`/cancelamento-consulta/${selectedConsulta.id}`, {
+                mensagem: motivoCancelamento,
+                id_usuario:selectedConsulta.id_usuario,
+                nome_medico:localStorage.getItem("nome"),
+                nome_usuario:selectedConsulta.nome,
+                horario_inicio:selectedConsulta.horario_inicio
+            });
+            
+            // Atualiza a lista de consultas
+            const response = await api.get(`/medicos/consultas/${medicoId}`);
+            setConsultas(response.data);
+            
+            setShowMotivoModal(false);
+            setMotivoCancelamento('');
+            setSelectedConsulta(null);
+            alert('Consulta cancelada com sucesso!');
+        } catch (error) {
+            console.error('Erro ao cancelar consulta:', error);
+            alert('Erro ao cancelar consulta. Tente novamente.');
+        }
+    };
 
     return (
         <div className="Consultas-container">
@@ -116,8 +130,10 @@ function Consultas() {
                                     {consulta.nome} - {consulta.cpf}
                                 </div>
                                 <div className="botoes-container">
-                                    <button className="entrar-button" onClick={handleEntrar}>Entrar</button>
-                                    <button className="cancelar-button">Cancelar</button>
+                                    <button className="entrar-button" onClick={() => handleEntrar(consulta)}>Entrar</button>
+                                    <button className="cancelar-button" onClick={() => handleCancelar(consulta)}>
+                                        Cancelar
+                                    </button>
                                 </div>
                             </div>
                         );
@@ -133,6 +149,36 @@ function Consultas() {
                 Voltar
             </button>
             
+            {showConfirmModal && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <h3>Confirmar Cancelamento</h3>
+                        <p>Tem certeza que deseja cancelar esta consulta?</p>
+                        <div className="modal-buttons">
+                            <button onClick={handleConfirmCancelamento}>Sim</button>
+                            <button onClick={() => setShowConfirmModal(false)}>Não</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {showMotivoModal && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <h3>Motivo do Cancelamento</h3>
+                        <textarea
+                            value={motivoCancelamento}
+                            onChange={(e) => setMotivoCancelamento(e.target.value)}
+                            placeholder="Digite o motivo do cancelamento"
+                            rows="4"
+                        />
+                        <div className="modal-buttons">
+                            <button onClick={handleSubmitCancelamento}>Confirmar</button>
+                            <button onClick={() => setShowMotivoModal(false)}>Voltar</button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

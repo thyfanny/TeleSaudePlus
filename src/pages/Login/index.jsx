@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Logo from '../../assets/Telesaude_logo.png';
 import './style.css';
 import api from '../../services/api';
+import { requestPermission } from '../../middlewares/notificacoes';
 
 function Login() {
     const navigate = useNavigate();
@@ -13,7 +14,7 @@ function Login() {
                 email: e.target.email.value,
                 senha: e.target.senha.value
             });
-    
+            console.log(response.data)
             if (response.status === 200) {
                 const medico = await api.get(`medicos/${response.data.id}`);
                 // Salva o médico completo ou só o que quiser
@@ -21,7 +22,14 @@ function Login() {
                 localStorage.setItem("medicoId", medico.data.id);
                 localStorage.setItem("imagem", medico.data.imageUrl);
                 localStorage.setItem("nome", medico.data.nome);
+                localStorage.setItem("id",response.data.id_usuario);
                 console.log(medico);
+                if(medico.data.token){
+                    console.log("Token de FCM:", medico.data.token);
+                }
+                else{
+                    await requestPermission();
+                }
                 navigate('/main');
             } else if (response.status === 401) {
                 alert("Usuário ou senha inválidos");

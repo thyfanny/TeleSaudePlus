@@ -14,8 +14,8 @@ function Editar_Horario() {
   const diasSemanaLabel = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
 
   const horarioPadrao = {
-    hora_inicio: "0:00",
-    hora_fim: "00:00",
+    horario_inicio: "0:00",
+    horario_fim: "00:00",
     dia_semana: 0,
     id_medico: medicoId,
     modified: false,
@@ -23,6 +23,7 @@ function Editar_Horario() {
 
   async function getHorario() {
     try {
+      console.log(medicoId)
       const response = await api.get(`/horarios-medicos/${medicoId}`);
       const horarioData = response.data;
 
@@ -34,8 +35,8 @@ function Editar_Horario() {
             id: horarioExistente.id,
             id_medico: horarioExistente.id_medico,
             dia_semana: horarioExistente.dia_semana,
-            hora_inicio: horarioExistente.horario_inicio.slice(0,5), // '08:00'
-            hora_fim: horarioExistente.horario_fim.slice(0,5),       // '16:00'
+            horario_inicio: horarioExistente.horario_inicio.slice(0,5), // '08:00'
+            horario_fim: horarioExistente.horario_fim.slice(0,5),       // '16:00'
             modified: false,
           };
         } else {
@@ -56,17 +57,8 @@ function Editar_Horario() {
     }
   }, [medicoId]);
 
-  const navigate = useNavigate(); 
   
-  let horario = [];
-  async function getHorario() {
-      horario = await api.get("/horarios-medicos/:id");
-      console.log("Conectado ao banco de dados");
-    }
 
-    useEffect(() => {
-        getHorario();
-    }, []);
 
   const handleVoltar = () => navigate("/main", { state: { id: medicoId } });
 
@@ -74,11 +66,12 @@ function Editar_Horario() {
 
   const handleSalvar = async () => {
     try {
+      console.log(horarios);
       for (const horario of horarios) {
         if (horario.modified) {
           const payload = {
-            horario_inicio: horario.hora_inicio,
-            horario_fim: horario.hora_fim,
+            horario_inicio: horario.horario_inicio,
+            horario_fim: horario.horario_fim,
             dia_semana: horario.dia_semana,
             id_medico: horario.id_medico,
           };
@@ -98,80 +91,16 @@ function Editar_Horario() {
     } catch (error) {
       alert("Erro ao alterar os horários.");
       console.error(error);
-    }
-
-  const handleSalvar = () => {
-
-    const updatedHorarioInicio = horarios.map(horario => horario.hora_inicio);
-    const updatedHorarioFim = horarios.map(horario => horario.hora_fim);
-
-    console.log("Horários salvos:", horarios);
-    console.log("Horário Início atualizado:", updatedHorarioInicio);
-    console.log("Horário Fim atualizado:", updatedHorarioFim);
-
-    // Atualize as variáveis horario_inicio e horario_fim
-
-    navigate("/editar-horario");
-  };
+    }}
 
   const handleHorarioChange = (index, field, value) => {
     const newHorarios = [...horarios];
     newHorarios[index][field] = value;
+    newHorarios[index].modified = true;
     setHorarios(newHorarios);
   };
 
-  //dados mockados para testes
-  let [horarios, setHorarios] = useState([
-    {
-      id: 1,
-      id_medico: 1,
-      hora_inicio: "08:00",
-      hora_fim: "11:00",
-      dia_semana: "Segunda",
-    },
-    {
-      id: 2,
-      id_medico: 1,
-      hora_inicio: "08:00",
-      hora_fim: "13:00",
-      dia_semana: "Terça",
-    },
-    {
-      id: 3,
-      id_medico: 1,
-      hora_inicio: "08:00",
-      hora_fim: "15:00",
-      dia_semana: "Quarta",
-    },
-    {
-      id: 4,
-      id_medico: 1,
-      hora_inicio: "08:00",
-      hora_fim: "17:00",
-      dia_semana: "Quinta",
-    },
-    {
-      id: 5,
-      id_medico: 1,
-      hora_inicio: "08:00",
-      hora_fim: "19:00",
-      dia_semana: "Sexta",
-    },
-    {
-      id: 6,
-      id_medico: 1,
-      hora_inicio: "00:00",
-      hora_fim: "00:00",
-      dia_semana: "Sábado",
-    },
-    {
-      id: 7,
-      id_medico: 1,
-      hora_inicio: "00:00",
-      hora_fim: "00:00",
-      dia_semana: "Domingo",
-    },
-  ]);
+
 
   return (
     <div className="horarios-container">

@@ -12,7 +12,18 @@ import Token from "./pages/Token/index.jsx";
 import Cadastro from "./pages/Cadastro/index.jsx";
 import Editar_Horario from "./pages/Editar_Horario/index.jsx";
 import Entrar_Consulta from "./pages/Entrar_Consulta/index.jsx";
+import { onMessage } from "firebase/messaging";
+import {messaging} from './middlewares/notificacoes.js'
 
+onMessage(messaging, (payload) => {
+  console.log("Mensagem recebida em primeiro plano:", payload);
+  const notificationTitle = payload.notification.title;
+  const notificationOptions = {
+    body: payload.notification.body,
+    
+  };
+  new Notification(notificationTitle, notificationOptions);
+});
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
